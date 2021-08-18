@@ -64,6 +64,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django_session_timeout.middleware.SessionTimeoutMiddleware',
@@ -73,7 +75,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    #'whitenoise.middleware.WhiteNoiseMiddleware',
 
 ]
 SESSION_EXPIRE_SECONDS = 3600  # 1 hour
@@ -130,13 +131,11 @@ DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     #}
 #}
-
 DATABASES = {
     "default": dj_database_url.config(
         default="postgres://postgres:root@localhost:5432/commandepoulet", conn_max_age=600
     )
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
