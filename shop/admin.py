@@ -2,7 +2,7 @@ from django.contrib import admin
 from django import forms
 from django.contrib.auth.models import User,Group,Permission
 
-from .models import Category, Product
+from .models import Category, Product,Size,ProductAttribute
 
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -10,18 +10,37 @@ class CategoryAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
 
 
-admin.site.register(Category, CategoryAdmin)
+class ProductVariantsInline(admin.TabularInline):
+    model = ProductAttribute
+    min_num = 2
+    extra = 0
+    show_change_link = True
+    def has_change_permission(self, request, obj):
+        return False
+    def has_add_permission(self, request, obj=None):
+        return False
 
-
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['name', 'slug', 'price',
-                    'available', 'created', 'updated']
-    list_filter = ['available', 'created', 'updated']
-    list_editable = ['price', 'available']
+    list_display = ['image_tag','name', 'price',
+                    'available',]
+    list_filter = ['available',]
+    list_editable = ['available']
     prepopulated_fields = {'slug': ('name',)}
-    search_fields=['name','price']
+    search_fields=['name']
+    inlines = [ProductVariantsInline,]
+
+class ProductAttributeAdmin(admin.ModelAdmin):
+    list_display = ['id','image_tag1','product','price', 'size','is_active']
 
 
+class SizeAdmin(admin.ModelAdmin):
+    list_display = ['title']
 
 admin.site.register(Product, ProductAdmin)
+admin.site.register(ProductAttribute, ProductAttributeAdmin)
+admin.site.register(Category, CategoryAdmin)
+admin.site.register(Size,SizeAdmin)
+#admin.site.register(Variation)

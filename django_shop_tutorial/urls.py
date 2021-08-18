@@ -30,17 +30,13 @@ admin.site.site_header = 'Administration Commande Poulets et oeufs SEDIMA '
 urlpatterns = [
     re_path(r'^admin/', admin.site.urls),
     re_path(r'^cart/', include(('cart.urls', 'cart'), namespace='cart')),
-    re_path(r'^orders/', include(('orders.urls', 'orders'), namespace='orders')),
-    re_path(r'^payment/', include(('payment.urls', 'payment'), namespace='payment')),
-    #path(r'^paypal/', include('paypal.standard.ipn.urls')),
-    re_path(r'^', include(('shop.urls', 'shop'), namespace='shop')),
-    re_path(r'^users/login/$', auth.LoginView.as_view(template_name='orders/login.html'), name='login'),
-    re_path(r'^users/logout/$',pagelogout,name='logout'),
-    #re_path(r'^users/change_password/$', login_required(auth.PasswordChangeView), {'post_change_redirect' : '/','template_name': 'orders/order/change_password.html'}, name='change_password'),
-    re_path(r'^users/change_password/$', auth.PasswordChangeView.as_view(template_name= 'orders/order/change_password.html'), name='change_password'),
-    re_path(r'^users/change_password/done/$', login_required(auth.PasswordChangeDoneView.as_view(template_name= 'orders/order/password_change_done.html')), name='password_change_done'),
+   # re_path(r'^orders/', include(('orders.urls', 'orders'), namespace='orders')),
+    path('orders/', include('orders.urls')),
 
-    re_path(r'^', include('templated_email.urls', namespace='templated_email')),
+    re_path(r'^accounts/', include(('accounts.urls', 'accounst'), namespace='accounts')),
+    re_path('', include(('shop.urls', 'shop'), namespace='shop')),
+
+    #re_path(r'^', include('templated_email.urls', namespace='templated_email')),
 
     re_path(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}), 
     re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}), 

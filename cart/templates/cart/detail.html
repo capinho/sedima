@@ -1,124 +1,147 @@
 {% extends "shop/layout.html" %}
 {% load static %}
 {% load bootstrap3 %}
+
 {% block title %}
-    Votre Panier de produits
+    {% if category %}{{ category.title }}{% else %}Produits {% endif %}
 {% endblock %}
-{% block css%}
-<style>
-body{
-  background-color: white;
-}
-</style>
-{%endblock%}
-
-{% block body %}
-    <h1>Votre Panier <i class="fa fa-shopping-cart fa-lg" alt="Cart"></i></h1>
 
 
-    <div class="row" style="background-color:#FFFFFF">
-        <div class="col-sm-12 col-md-10 col-md-offset-1 table-responsive">
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    <th>Produit</th>
-                    <th>Quantité</th>
-                    <th class="text-center">Prix</th>
-                    <th class="text-center">Total</th>
-                    <th> </th>
-                </tr>
-                </thead>
-                <tbody>
-                  {% for item in cart %}
+{% block contentList %}
 
-                    {% with product=item.product %}
-                        <tr>
-                            <td class="col-sm-8 col-md-6">
-                                <div class="media">
-                                    <a class="thumbnail pull-left" href="{{ product.get_absolute_url }}">
-                                        <img class="media-object"
-                                             src="{% if product.image %}{{ product.image.url }}
-                                                  {% else %}{% static "img/no_image.png" %}{% endif %}"
-                                             style="width: 72px; height: 72px;">
-                                    </a>
-                                    <div class="media-body">
-                                        <h4 class="media-heading"><a
-                                                href="{{ product.get_absolute_url }}">{{ product.name }}</a></h4>
-                                        <span>Status: </span><span class="text-success"><strong>En Stock</strong></span>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="col-sm-1 col-md-1" style="text-align: center">
-                              <form action="{% url "cart:cart_add" product.id %}" method="post">
-                                    {% csrf_token %}
-                                    <input type="number" id="id_quantity" name="quantity" value="{{item.quantity}}" class="form-control text-center" >
-                                    {% bootstrap_field item.update_quantity_form.update %}
-
-                                    <td class="col-sm-1 col-md-1 text-center"><strong>{{ item.price }} FCFA</strong></td>
-                                    <td class="col-sm-1 col-md-1 text-center"><strong>{{ item.total_price }} FCFA</strong></td>
-                                    <td class="col-sm-1 col-md-1">
-                                      {% buttons %}
-                                        <button type="submit" class="btn btn-info btn-sm">
-                                          <i class="fa fa-refresh"></i>
-                                        </button>
-                                      {% endbuttons %}
-                                    </td>
-                                    <td class="col-sm-1 col-md-1">
-                                      <a href="{% url "cart:cart_remove" product.id %}" class="btn btn-danger btn-sm">
-                                        <i class="fa fa-trash-o"></i>
-                                      </a>
-                                    </td>
-                              </form>
-
-                            </td>
-                        </tr>
-                    {% endwith %}
-                    {%empty%}
-                      <h1 class="font-weight-bold text-center">Votre panier est vide</h1>
-
-                    {% endfor %}
-                <tr>
-                    <td>  </td>
-                    <td>  </td>
-                    <td>  </td>
-                    <td><h4>Total</h4></td>
-                    <td class="text-right"><h4><strong>{{ cart.get_total_price }} FCFA</strong></h4></td>
-                </tr>
-                {% for item in cart %}
-
-                <tr>
-                    <td>  </td>
-                    <td>  </td>
-                    <td>  </td>
-                    <td>
-                        <a href="{% url "shop:product_list" %}" class="btn btn-warning">
-                            Continuer Commande <i class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></i>
-                        </a>
-                    </td>
-
-                    <td>
-                        <a href="{% url "orders:order_create" %}" class="btn btn-default">Aperçu bon de commande <i
-                                class="glyphicon glyphicon-play" aria-hidden="true"></i>
-                        </a>
-                    </td>
-                </tr>
-                {%empty%}
-                <tr>
-                  <td>  </td>
-                  <td>  </td>
-                  <td>  </td>
-                  <td>
-                      <a href="{% url "shop:product_list" %}" class="btn btn-warning">
-                          Continuer Commande <i class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></i>
-                      </a>
-                  </td>
-              </tr>
-              {%endfor%}
-
-                </tbody>
-            </table>
+    <!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-section set-bg" data-setbg="{% static 'new/img/breadcrumb.jpg' %} ">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="breadcrumb__text">
+                        <h2>Shopping Cart </h2>
+                        <div class="breadcrumb__option">
+                            <a href="{% url 'shop:product_list' %}">Home</a>
+                            <span>Shopping Cart</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+    </section>
+    <!-- Breadcrumb Section End -->
+    {% if cart_items %}
+
+    <!-- Shoping Cart Section Begin -->
+    <section class="shoping-cart spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="shoping__cart__table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="shoping__product">Products</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for item in cart_items  %}
+                                <tr>
+                                    <td class="shoping__cart__item">
+                                        <img src="{% if item.product.image %}{{ item.product.image.url }} 
+                                            {% else %}{% static 'img/pas_image.png' %} {% endif %}" width="80" height="80" alt="">
+                                        <h5><a href="{{ item.product.get_absolute_url}}" class="title text-dark"> {{ item.product.name }}</a>
+                                            <p class='text-muted small'>
+                                                {% if item.variations.all%}
+                                                    {% for items in item.variations.all %}
+                                                        Taille : {{items.size.title}}
+                                                    {% endfor %}
+                                                {%endif%}
+                                            </p>
+                                        </h5>
+                                                                            
+
+                                    </td>
+
+                                    <td class="shoping__cart__price">
+                                        {% if item.variations.all%}
+                                            {% for items in item.variations.all %}
+                                                {{items.price}} Fcfa
+                                            {% endfor %}
+                                        {%else%}
+                                            {{ item.product.price }} Fcfa
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                    	<div class="input-group input-spinne">
+                                            <div class="input-group-prepend">
+                                                <a href="{% url 'cart:remove_cart' item.product.id item.id %}" class="btn btn-light" type="button" id="button-plus"> <i class="fa fa-minus"></i> </a>
+                                            </div>
+                                            <div class=" w-25">
+                                                <input type="text" class="form-control" value="{{item.quantity}}">
+                                            </div>
+                                            <div class="input-group-prepend">
+                                                <form action="{% url 'cart:add_cart' item.product.id %}" method="POST">
+                                                    {% csrf_token %}
+                                                    {% for items in item.variations.all %}
+                                                        <input type="hidden" name="size" value="{{items.size.title | capfirst }}">
+                                                    {% endfor %}
+                                                    <button class="btn btn-light" type="submit" id="button-minus"> <i class="fa fa-plus"></i> </button>
+
+                                                </form>    
+                                            </div>
+                                        </div>
+
+                                    </td>
+                                    <td class="shoping__cart__total">
+                                    {% if item.variations.all%}
+                                        {{item.sub_total_variation}}
+                                    {%else%}
+                                        {{item.sub_total}} 
+                                    {% endif %}
+                                    </td>
+                                    <td class="shoping__cart__item__close delete-item">
+                                        <a href="{% url 'cart:remove_cart_item' item.product.id item.id %}" onclick="return confirm('Etes vous sure de vouloir supprimer cet article')"><span class="icon_close"></span></a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="shoping__cart__btns">
+                        <a href="{% url 'shop:product_list' %}" class="primary-btn cart-btn">CONTINUER MES ACHATS</a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="shoping__checkout">
+                        <h5>Cart Total</h5>
+                        <ul>
+                            <li>Total <span>{{ grand_total }} Fcfa</span></li>
+                        </ul>
+                        <a href="{% url 'cart:checkout' %}" class="primary-btn">PROCEED TO CHECKOUT</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Shoping Cart Section End -->
+    {% else %}
+    <br>
+        <h2 class="text-center">Votre panier est vide!</h2><br>
+            <div class="text-center">
+                <div class="col-lg-12">
+                    <div class="shoping__cart__btns">
+                        <a href="{% url 'shop:product_list' %}" class="primary-btn">CONTINUER MES ACHATS</a>
+                    </div>
+                </div>
+            </div>
+
+    {% endif %}
 
 
 {% endblock %}

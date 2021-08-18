@@ -12,8 +12,13 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 import dj_database_url
-import django_heroku
+import django_on_heroku
 from decouple import config
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+from decouple import config,Csv
+from typing import cast
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -23,12 +28,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '23szcx4&aha^m_l^lwuf!vg%-prmg$j_by_c7le%k#6b(+u3k3'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
+
 
 
 # Application definition
@@ -43,9 +49,10 @@ INSTALLED_APPS = [
     'bootstrap3',
     'shop',
     'cart',
+    'accounts',
+
     'orders',
-    #'paypal.standard.ipn',
-    'payment',
+
     'widget_tweaks',
     'templated_email',
     'rangefilter',
@@ -53,11 +60,14 @@ INSTALLED_APPS = [
     'import_export',
 
 
+
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django_session_timeout.middleware.SessionTimeoutMiddleware',
+
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -66,6 +76,9 @@ MIDDLEWARE = [
     #'whitenoise.middleware.WhiteNoiseMiddleware',
 
 ]
+SESSION_EXPIRE_SECONDS = 3600  # 1 hour
+SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
+SESSION_TIMEOUT_REDIRECT = '/login'
 
 ROOT_URLCONF = 'django_shop_tutorial.urls'
 
@@ -81,7 +94,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'cart.context_processors.cart',
+                'cart.context_processors.counter',
+                'shop.template_context.getCategories',
+
             ],
         },
     },
@@ -91,16 +106,20 @@ WSGI_APPLICATION = 'django_shop_tutorial.wsgi.application'
 
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'auth.smtp.1and1.fr'
-EMAIL_PORT = '25'
-EMAIL_HOST_USER = 'commandesedima@sedima.com'
-EMAIL_HOST_PASSWORD = 'S3d1m@Gr0up20202025'
-TEMPLATED_EMAIL_FROM_EMAIL = 'Commande SEDIMA'
-# django-paypal settings
-PAYPAL_RECEIVER_EMAIL = 'commandesedima@sedima.com'
-PAYPAL_TEST = True
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'auth.smtp.1and1.fr'
+# EMAIL_PORT = '25'
+# EMAIL_HOST_USER = 'commandesedima@sedima.com'
+# EMAIL_HOST_PASSWORD = 'S3d1m@Gr0up20202025'
+# TEMPLATED_EMAIL_FROM_EMAIL = 'Commande SEDIMA'
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = config('EMAIL_PORT')
+EMAIL_USE_TLS = config('EMAIL_USE_TLS')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
@@ -114,7 +133,7 @@ PAYPAL_TEST = True
 
 DATABASES = {
     "default": dj_database_url.config(
-        default="postgres://postgres:commandepoulet@localhost:5432/commandepoulet", conn_max_age=600
+        default="postgres://postgres:root@localhost:5432/commandepoulet", conn_max_age=600
     )
 }
 
@@ -166,12 +185,35 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'staticfiles')
 ]
 
-CART_SESSION_ID = 'cart'
 LOGIN_REDIRECT_URL = '/'
-LOGIN_URL = 'login'
-#SESSION_COOKIE_AGE=86400
-#AUTH_USER_MODEL = 'orders.User'
+LOGIN_URL = '/accounts/login'
+
 
 TEMPLATED_EMAIL_BACKEND = 'templated_email.backends.vanilla_django'
 
 #django_heroku.settings(locals())
+
+
+AUTH_USER_MODEL = 'accounts.Account'
+
+from django.contrib.messages import constants as messages
+MESSAGE_TAGS = {
+    messages.ERROR: 'danger',
+}
+
+
+# cloudinary.config( 
+#   cloud_name = "drnxvi983", 
+#   api_key = "154785378299453", 
+#   api_secret = "AYj239Rq2CQRYwpOgXx5-_C1DZs",
+#   secure = True,
+
+# )
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': config('CLOUD_NAME'),
+    'API_KEY': config('API_KEY'),
+    'API_SECRET': config('API_SECRET'),
+
+}
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'

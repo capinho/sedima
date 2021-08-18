@@ -6,91 +6,142 @@
     {% if category %}{{ category.title }}{% else %}Produits{% endif %}
 {% endblock %}
 
-{% block body %}
-    <div class="row"  style="background-color:#FFFFFF">
-        <div class="col-md-12">
-            <div class="col-md-6 col-md-4">
+    {% block css %}
+<style>
+label.error {
+    color: red;
+    font-size: 1rem;
+    display: block;
+    margin-top: 5px;
+}
 
-            </div>
-            <div class="col-md-6 col-md-4">
-                <div class="thumbnail">
-                    <img src="{% if product.image %}{{ product.image.url }}
-                              {% else %}{% static "img/no_image.png" %}{% endif %}"
-                         class="img-responsive">
-                    <div class="caption">
-                        <div class="row">
-                            <div class="col-md-6 col-xs-6">
-                                <h3>{{ product.name }}</h3>
-                            </div>
-                            <div class="col-md-6 col-xs-6 price">
-                                <h3>
-                                    <label>{{ product.price }} FCFA</label></h3>
-                            </div>
+</style>
+
+    {% endblock %}
+
+{% block contentList %}
+
+
+    <!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-section set-bg" data-setbg="{% static 'new/img/breadcrumb.jpg' %}">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="breadcrumb__text">
+                        <h2>{{ product.name|title }}</h2>
+                        <div class="breadcrumb__option">
+                            <a href="{% url 'shop:product_list' %}">Accueil</a>
+                            <a href="{{ product.category.get_absolute_url }}">{{ product.category }}</a>
+                            <span>{{ product.name }}</span>
                         </div>
-                        <p>{{ product.description }}</p>
-                        <h2><a href="{{ product.category.get_absolute_url }}">{{ product.category }}</a></h2>
-                        <form action="{% url "cart:cart_add" product.id %}" method="post">
-                            {% csrf_token %}
-                            {% if request.user.profile.is_directeur %}
-                              {% ifequal product.name "Tablettes d'oeufs" %}
-
-                                {% csrf_token %}
-                                <select class="form-control" id="id_quantity" name="quantity" title="" required="">
-                                  <option value="1">1</option>
-                                  <option value="2">2</option>
-                                  <option value="3">3</option>
-                                  <option value="4">4</option>
-                                  <option value="5">5</option>
-                                  <option value="6">6</option>
-                                  <option value="7">7</option>
-                                  <option value="8">8</option>
-                                  <option value="9">9</option>
-                                  <option value="10">10</option>
-                                </select><br>
-                              {%else%}
-                                  {% bootstrap_form cart_product_form %}
-                              {%endifequal%}
-                            {%else%}
-                              {% if request.user.profile.is_administration %}
-                                  {% ifequal product.name "Tablettes d'oeufs" %}
-                                   {% bootstrap_form cart_product_form %}
-                                  {%else%}
-                                  {% bootstrap_form cart_product_form %}
-                                  {%endifequal%}
-                              {%else%}
-                                    {% ifequal product.name "Tablettes d'oeufs" %}
-                                <select class="form-control" id="id_quantity" name="quantity" title="" required="">
-                                  <option value="1">1</option>
-                                  <option value="2">2</option>
-                                  <option value="3">3</option>
-                                  <option value="4">4</option>
-                                  <option value="5">5</option>
-                                  <option value="6">6</option>
-                                </select><br>
-                                {%else%}
-                                  {% bootstrap_form cart_product_form %}
-                                {%endifequal%}
-
-                              {%endif%}
-                            {% endif%}
-
-                            {% buttons %}
-                                <button type="submit" class="btn btn-success btn-product">
-                                    <span class="glyphicon glyphicon-shopping-cart"></span> Ajouter au panier
-                                </button>
-                            {% endbuttons %}
-                        </form>
-
-                        <p></p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 col-md-4">
+        </div>
+    </section>
+    <!-- Breadcrumb Section End -->
 
+    <!-- Product Details Section Begin -->
+    <section class="product-details spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 col-md-6">
+                    <div class="product__details__pic">
+                        <div class="product__details__pic__item">
+                            <img class="product__details__pic__item--large"
+                                src="{% if product.image %}{{ product.image.url }}
+                                {% else %}{% static 'img/pas_image.png' %} {% endif %}" alt="">
+                        </div>
+                    </div>
+                </div>
+                    <div class="col-lg-6 col-md-6">
+                        <div class="product__details__text">
+                        <form action="{% url 'cart:add_cart' product.id %}"  id="basic-form" method="POST" >
+                            {% csrf_token %}
+                            <h3>{{ product.name }}</h3>
+                            <div class="product__details__price">{% if product.productattribute_set.all %}<span class="product-price"> {{ product.productattribute_set.first.price }} à {{ product.productattribute_set.last.price }}</span> Fcfa{% else %}<span class="product-price">{{ product.price }}</span> FCFA{%endif%}</div>
+                            <p>{{ product.description }}</p>
+
+
+                            <div class="product__details__quantity">
+                                {%if product.productattribute_set.all%}
+                                    <div class="row">
+                                        <div class="item-option-select">
+                                            <h6>Choisissez la taille</h6><br>
+                                            <select name="size" class="form-select" id='size'>
+                                            <option value="" disabled selected>Choisissez la taille</option>
+                                            {% for i in product.productattribute_set.all %}
+                                                <option class="choose-size" data-size="{{i.size.title}}" data-price="{{i.price}}" value="{{i.size.title |lower}}" >{{i.size.title |capfirst}}</option>
+                                            {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <br><br>
+                                    <div class="control">
+                                            <button type="submit" class="primary-btn">AJOUTER AU PANIER</button>
+                                    </div>                           
+                                    
+                                {%else%}
+
+                                    {% comment %} {% for size in sizes %}
+                                    <button data-price="{{size.price}}" value="{{size.size__title}}" name="size" type="button" class="btn btn-outline-secondary btn-sm choose-size" data-size="{{size.size__title}}"><span id="product-size">{{size.size__title}}</span></button>
+                                    {%endfor%}<br> <br> {% endcomment %}
+
+                                        {% comment %} <div class="quantity">
+                                            <div class="pro-qty">
+                                                <input type="number" name="quantity" value="1" class="input" id="productQty" min="1">
+                                            </div>
+                                        </div>  {% endcomment %}
+                                    <div class="control">
+                                            <button type="submit" class="primary-btn">AJOUTER AU PANIER</button>
+                                    </div>                           
+                                {%endif%}
+
+                            </div>
+                    </form>
+
+                            <ul>
+                                <li><b>Disponibilité</b> <span>En Stock</span></li>
+                                <li><b>Livraison</b> <span>Gratuite. </span></li>
+                            </ul>
+                        </div>
+                    </div>
             </div>
         </div>
+    </section>
+    <!-- Product Details Section End -->
 
-    </div>
+        <!-- Related Product Section Begin -->
+        <section class="related-product">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="section-title related__product__title">
+                            <h2>Autres produits apparenté</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    {% for product in related_products%}
+                        <div class="col-lg-3 col-md-4 col-sm-6">
+                            <div class="product__item">
+                                <div class="product__item__pic set-bg" data-setbg="{% if product.image %}{{ product.image.url }}
+                                    {% else %}{% static 'img/pas_image.png' %} {% endif %}">
+                                    <ul class="product__item__pic__hover">
+                                        <li><a href="{{ product.get_absolute_url }}"><i class="fa fa-shopping-cart"></i></a></li>
+                                    </ul>
+                                </div>
+                                <div class="product__item__text">
+                                    <h6><a href="#">{{product.name}}</a></h6>
+                                    <h5>{% if product.productattribute_set.all %} {{ product.productattribute_set.first.price }} à {{ product.productattribute_set.last.price }} Fcfa {% else %} {{ product.price }} Fcfa {%endif%}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    {%endfor%}
+                </div>
+            </div>
+        </section>
+        <!-- Related Product Section End -->
 
 
-{% endblock %}
+        {% endblock %}

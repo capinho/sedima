@@ -1,0 +1,74 @@
+{% extends "shop/layout.html" %}
+{% load static %}
+{% load bootstrap3 %}
+
+{% block title %}
+    Checkout
+{% endblock %}
+
+
+{% block contentList %}
+    <!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-section set-bg" data-setbg="{% static 'new/img/breadcrumb.jpg' %} ">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="breadcrumb__text">
+                        <h2>Checkout</h2>
+                        <div class="breadcrumb__option">
+                            <a href="{% url 'shop:product_list' %}">Accueil</a>
+                            <span>Checkout</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Breadcrumb Section End -->
+
+    <!-- Checkout Section Begin -->
+    <section class="checkout spad">
+        <div class="container">
+            <div class="checkout__form">
+                <h4>Détails de la commande</h4>
+                <form action="{% url 'place_order' %}" method='POST'>
+                      {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-lg-12 col-md-6">
+                            <div class="checkout__order">
+                                <h4>Votre commande</h4>
+                                <div class="checkout__order__products">Produits<span>Total</span></div>
+                                <ul>                            
+                                    {% for item in cart_items  %}
+                                        <li>{{ item.product.name }} 
+                                                
+                                                    {% if item.variations.all %}
+                                                        {% for items in item.variations.all %}
+                                                            ( Taille : {{items.size.title}} )
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                    x {{item.quantity}}
+                                            <span>
+                                                {% if item.variations.all%}
+                                                    {{item.sub_total_variation}}
+                                                {%else%}
+                                                    {{item.sub_total}} 
+                                                {% endif %}
+                                            
+                                            </span>
+                                        </li>                              
+                                    {% endfor %}
+
+                                </ul>
+                                <div class="checkout__order__total">Total <span> {{ grand_total }} FCFA</span></div>
+                                <button type="submit" class="site-btn">PLACER COMMANDE</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+    <!-- Checkout Section End -->
+{%endblock%}

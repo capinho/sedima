@@ -1,50 +1,51 @@
+from cart.models import CartItem
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from cart.views import _cart_id
+from .models import Category, Product,ProductAttribute
+from django.db.models import Max,Min
 
-from cart.forms import CartAddProductForm,CartAddProductForm1
-from .models import Category, Product
-
-@login_required
+@login_required        
 def product_list(request, category_slug=None):
     user=request.user
     category = None
-    if user.profile.is_administration:
-        categories = Category.objects.all()
-    else:
-        categories = Category.objects.all().exclude(name='Poulets frais')    
-    if user.profile.is_administration:
-        products = Product.objects.filter(available=True)
-    else:
-        products = Product.objects.filter(available=True).exclude(category__name='Poulets frais')
+    categories = Category.objects.all()   
+    products = Product.objects.filter(available=True)
+    min_price = ProductAttribute.objects.aggregate(Min('price'))
+    max_price = ProductAttribute.objects.aggregate(Max('price'))
+
     if category_slug:
         category = get_object_or_404(Category, slug=category_slug)
         products = products.filter(category=category)
+
     return render(request,
                   'shop/product/list.html',
                   {'category': category,
                    'categories': categories,
-                   'products': products})
+                   'products': products,'min_price':min_price,'max_price':max_price})
 
-@login_required
-def product_detail(request, product_id, slug):
-    if request.user.profile.is_administration:
-        product = get_object_or_404(Product,
-                                    #~Q(name='Poulets frais'),
-                                    id=product_id,
-                                    slug=slug,
-                                    available=True)
-    else:
-        product = get_object_or_404(Product,
-                                    ~Q(category__name='Poulets frais'),
-                                    id=product_id,
-                                    slug=slug,
-                                    available=True)
-    if request.user.profile.is_administration:
-        cart_product_form = CartAddProductForm1()
-    else:
-        cart_product_form = CartAddProductForm()
+@login_required        
+def product_detail(request,category_slugg,product_slugg):
+    product = get_object_or_404(Product,
+                                slug=product_slugg,
+                                category__slug=category_slugg,
+                                available=True)
+    related_products = Product.objects.filter(category=product.category).exclude(slug=product_slugg)[:4]
+    sizes = ProductAttribute.objects.filter(product=product).values('size__id','size__title','price').distinct()
+
+    in_cart = CartItem.objects.filter(cart__cart_id=_cart_id(request), product=product).exists()
+
     return render(request,
                   'shop/product/detail.html',
                   {'product': product,
-                   'cart_product_form': cart_product_form})
+                   'sizes':sizes,
+                   'in_cart':in_cart,
+                   'related_products':related_products})
+
+@login_required        
+def search(request):
+    q = request.GET['q']
+    products = Product.objects.filter(name__icontains=q).order_by('-id')
+    return render(request,'shop/product/search.html', {'products':products})
+
+

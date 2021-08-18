@@ -1,0 +1,12 @@
+	<aside class="col-md-3">
+		<!--   SIDEBAR   -->
+		<ul class="list-group">
+			<a class="list-group-item  {% if '/accounts/' == request.path %}active {%endif%}"  href="{% url 'accounts:dashboard' %}">Dashboard</a>
+			<a class="list-group-item {% if '/my_orders/' in request.path %}active {%endif%}" href="{% url 'accounts:my_orders' %}">Mon historique de commandes</a>
+			{% comment %} <a class="list-group-item" href="#"> Modifier Profile </a> {% endcomment %}
+			<a class="list-group-item {% if '/change_password/' in request.path %}active {%endif%}" href="{% url 'accounts:change_password' %}">Modifier mot de passe  </a>
+		</ul>
+		<br>
+		<a class="btn btn-light btn-block" href="{% url 'accounts:logout' %}"> <i class="fa fa-power-off"></i> <span class="text">Deconnexion</span> </a>
+		<!--   SIDEBAR .//END   -->
+	</aside>
