@@ -197,15 +197,14 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 # STATICFILES_DIRS = [
 #     os.path.join(BASE_DIR, 'staticfiles')
 # ]
-#django_on_heroku.settings(locals())
+
+django_on_heroku.settings(locals())
 
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/accounts/login'
 
 
 TEMPLATED_EMAIL_BACKEND = 'templated_email.backends.vanilla_django'
-
-django_heroku.settings(locals())
 
 
 AUTH_USER_MODEL = 'accounts.Account'
