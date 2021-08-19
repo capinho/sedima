@@ -205,7 +205,7 @@ LOGIN_URL = '/accounts/login'
 
 TEMPLATED_EMAIL_BACKEND = 'templated_email.backends.vanilla_django'
 
-#django_heroku.settings(locals())
+django_heroku.settings(locals())
 
 
 AUTH_USER_MODEL = 'accounts.Account'
