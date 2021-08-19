@@ -130,11 +130,26 @@ DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     #}
 #}
+# DATABASES = {
+#     "default": dj_database_url.config(
+#         default="postgres://postgres:root@localhost:5432/commandepoulet", conn_max_age=600
+#     )
+# }
+
 DATABASES = {
-    "default": dj_database_url.config(
-        default="postgres://postgres:root@localhost:5432/commandepoulet", conn_max_age=600
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': config('DATABASE_NAME'),
+        'USER': config('DATABASE_USER'),
+        'PASSWORD': config('DATABASE_PASSWORD'),
+        'HOST': config('DATABASE_HOST'),
+        'PORT': config('DATABASE_PORT'),
+    }
 }
+
+db_from_env = dj_database_url.config(conn_max_age=600)
+DATABASES['default'].update(db_from_env)
+
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators

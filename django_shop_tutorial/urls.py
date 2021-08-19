@@ -19,9 +19,8 @@ from django.urls import path, include,re_path,reverse_lazy
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import views as auth
-from django.contrib.auth.decorators import login_required
 from orders.views import *
-from django.contrib.auth import update_session_auth_hash
+
 from django.views.static import serve 
 
 
@@ -30,7 +29,6 @@ admin.site.site_header = 'Administration Commande Poulets et oeufs SEDIMA '
 urlpatterns = [
     re_path(r'^admin/', admin.site.urls),
     re_path(r'^cart/', include(('cart.urls', 'cart'), namespace='cart')),
-   # re_path(r'^orders/', include(('orders.urls', 'orders'), namespace='orders')),
     path('orders/', include('orders.urls')),
 
     re_path(r'^accounts/', include(('accounts.urls', 'accounst'), namespace='accounts')),
