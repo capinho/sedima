@@ -198,7 +198,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 #     os.path.join(BASE_DIR, 'staticfiles')
 # ]
 
-django_on_heroku.settings(locals())
 
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/accounts/login'
@@ -215,14 +214,6 @@ MESSAGE_TAGS = {
 }
 
 
-# cloudinary.config( 
-#   cloud_name = "drnxvi983", 
-#   api_key = "154785378299453", 
-#   api_secret = "AYj239Rq2CQRYwpOgXx5-_C1DZs",
-#   secure = True,
-
-# )
-
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': config('CLOUD_NAME'),
     'API_KEY': config('API_KEY'),
@@ -230,3 +221,4 @@ CLOUDINARY_STORAGE = {
 
 }
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+django_on_heroku.settings(locals())
