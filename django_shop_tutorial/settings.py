@@ -194,10 +194,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'staticfiles')
-]
-django_on_heroku.settings(locals())
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'staticfiles')
+# ]
+#django_on_heroku.settings(locals())
 
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/accounts/login'
