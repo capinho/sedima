@@ -25,7 +25,7 @@ class Order(models.Model):
     user = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True)
   #  payment = models.ForeignKey(Payment, on_delete=models.SET_NULL, blank=True, null=True)
     order_number = models.CharField(max_length=20)
-    order_total = models.FloatField()
+    order_total = models.DecimalField(max_digits=11, decimal_places=0)
     status = models.CharField(max_length=10, choices=STATUS, default='En cours')
     ip = models.CharField(blank=True, max_length=20)
     is_ordered = models.BooleanField(default=False)
