@@ -130,25 +130,25 @@ DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     #}
 #}
-# DATABASES = {
-#     "default": dj_database_url.config(
-#         default="postgres://postgres:root@localhost:5432/commandepoulet", conn_max_age=600
-#     )
-# }
-
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': config('DATABASE_NAME'),
-        'USER': config('DATABASE_USER'),
-        'PASSWORD': config('DATABASE_PASSWORD'),
-        'HOST': config('DATABASE_HOST'),
-        'PORT': config('DATABASE_PORT'),
-    }
+    "default": dj_database_url.config(
+        default="postgres://postgres:root@localhost:5432/commandepoulet", conn_max_age=600
+    )
 }
 
-db_from_env = dj_database_url.config(conn_max_age=600)
-DATABASES['default'].update(db_from_env)
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': config('DATABASE_NAME'),
+#         'USER': config('DATABASE_USER'),
+#         'PASSWORD': config('DATABASE_PASSWORD'),
+#         'HOST': config('DATABASE_HOST'),
+#         'PORT': config('DATABASE_PORT'),
+#     }
+# }
+
+# db_from_env = dj_database_url.config(conn_max_age=600)
+# DATABASES['default'].update(db_from_env)
 
 
 # Password validation
@@ -197,6 +197,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'staticfiles')
 ]
+django_on_heroku.settings(locals())
 
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/accounts/login'
