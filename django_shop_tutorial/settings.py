@@ -105,14 +105,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'django_shop_tutorial.wsgi.application'
 
-#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'auth.smtp.1and1.fr'
-# EMAIL_PORT = '25'
-# EMAIL_HOST_USER = 'commandesedima@sedima.com'
-# EMAIL_HOST_PASSWORD = 'S3d1m@Gr0up20202025'
-# TEMPLATED_EMAIL_FROM_EMAIL = 'Commande SEDIMA'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = config('EMAIL_HOST')
@@ -210,6 +202,6 @@ CLOUDINARY_STORAGE = {
 }
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-#if DEBUG == 'False':
+
 #django_on_heroku.settings(locals())
 
