@@ -9,7 +9,7 @@ from django.db.models import Max,Min
 def product_list(request, category_slug=None):
     user=request.user
     category = None
-    categories = Category.objects.all()   
+    categories = Category.objects.all().order_by('-id')
     products = Product.objects.filter(available=True)
     min_price = ProductAttribute.objects.aggregate(Min('price'))
     max_price = ProductAttribute.objects.aggregate(Max('price'))
