@@ -27,7 +27,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = ['image_tag','name', 'price',
                     'available',]
     list_filter = ['available',]
-    list_editable = ['available']
+    list_editable = ['available','price']
     prepopulated_fields = {'slug': ('name',)}
     search_fields=['name']
     inlines = [ProductVariantsInline,]

@@ -68,7 +68,7 @@ label.error {
                                     <div class="row">
                                         <div class="item-option-select">
                                             <h6>Choisissez la taille</h6><br>
-                                            <select name="size" class="form-select" id='size'>
+                                            <select name="size" class="form-select" id='size' required>
                                             <option value="" disabled selected>Choisissez la taille</option>
                                             {% for i in product.productattribute_set.all %}
                                                 <option class="choose-size" data-size="{{i.size.title}}" data-price="{{i.price}}" value="{{i.size.title |lower}}" >{{i.size.title |capfirst}}</option>
