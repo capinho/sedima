@@ -16,7 +16,7 @@ class ProductVariantsInline(admin.TabularInline):
     extra = 0
     show_change_link = True
     def has_change_permission(self, request, obj):
-        return False
+        return True
     def has_add_permission(self, request, obj=None):
         return False
 
@@ -43,4 +43,3 @@ admin.site.register(Product, ProductAdmin)
 admin.site.register(ProductAttribute, ProductAttributeAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Size,SizeAdmin)
-#admin.site.register(Variation)

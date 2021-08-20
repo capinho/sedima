@@ -43,7 +43,7 @@ class Product(models.Model):
     description = models.TextField(blank=True)
    #image = models.ImageField(upload_to='products/%Y/%m/%d',null=True,blank=True)
     #image = CloudinaryField('image', null=True,blank=True)
-    image = models.ImageField(upload_to='products/%Y/%m/%d',null=True,blank=True)
+    image = models.ImageField(upload_to='products/%Y/%m/%d',null=True,blank=False)
 
     price = models.DecimalField(max_digits=10, decimal_places=0)
     available = models.BooleanField(default=True)

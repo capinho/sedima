@@ -78,7 +78,7 @@ MIDDLEWARE = [
 ]
 SESSION_EXPIRE_SECONDS = 3600  # 1 hour
 SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
-SESSION_TIMEOUT_REDIRECT = '/login'
+SESSION_TIMEOUT_REDIRECT = '/accounts/login'
 
 ROOT_URLCONF = 'django_shop_tutorial.urls'
 
@@ -136,21 +136,6 @@ DATABASES = {
     )
 }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': config('DATABASE_NAME'),
-#         'USER': config('DATABASE_USER'),
-#         'PASSWORD': config('DATABASE_PASSWORD'),
-#         'HOST': config('DATABASE_HOST'),
-#         'PORT': config('DATABASE_PORT'),
-#     }
-# }
-
-# db_from_env = dj_database_url.config(conn_max_age=600)
-# DATABASES['default'].update(db_from_env)
-
-
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 
@@ -194,9 +179,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, 'staticfiles')
-# ]
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'staticfiles')
+]
 
 
 LOGIN_REDIRECT_URL = '/'
@@ -221,4 +206,6 @@ CLOUDINARY_STORAGE = {
 }
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+#if DEBUG == 'False':
 django_on_heroku.settings(locals())
+
