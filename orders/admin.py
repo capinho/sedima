@@ -202,7 +202,6 @@ class OrderProductAdmin(admin.ModelAdmin):
     #list_filter = ['created_at','status','is_ordered']
     search_fields = ["order","user__first_name","user__last_name",'email']
     list_per_page = 20
-    actions = [export_commande]
 
 
 
